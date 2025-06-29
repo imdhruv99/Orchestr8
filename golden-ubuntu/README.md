@@ -32,3 +32,23 @@ A **hardened, minimal Ubuntu base image** built for secure, reusable container d
 ###### `RUN echo '* hard core 0' >> /etc/security/limits.conf`
 
 -   Core dumps may contain sensitive runtime data. Disabling them is a common security control to prevent information leakage in crash scenarios.
+
+## Build & Run
+
+Build command if you want to push to your docker-hub
+
+```
+docker build -t <docker-hub username>/golden-ubuntu:1.0.0 .
+```
+
+OR
+
+```
+docker build -t golden-ubuntu:1.0.0 .
+```
+
+Run command
+
+```
+docker run -it -d --name golden-ubunut-container <docker-hub username>/golden-ubuntu:1.0.0
+```
