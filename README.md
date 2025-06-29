@@ -92,42 +92,32 @@ Dockyard/
 
 ## 📄 License
 
-This project is licensed under the **Dual License** model:
+This project is licensed under the **MIT License** - a simple, permissive license that allows you to use this software for any purpose, including commercial use.
 
-### For Non-Commercial Use (Free)
+### MIT License Benefits
 
--   **License**: MIT License
--   **Usage**: Free for personal, educational, and non-commercial projects
--   **Attribution**: Required - must include original author attribution
+-   **Free for everyone**: Personal, educational, and commercial use
+-   **No restrictions**: Use, modify, distribute, and sell
+-   **Simple compliance**: Just include the license and copyright notice
+-   **Industry standard**: Widely trusted and understood
+-   **Community friendly**: Encourages adoption and contributions
 
-### For Commercial Use (Paid)
+### Attribution
 
--   **License**: Commercial License
--   **Fee**: $99 USD per commercial project/company
--   **Contact**: [dhruv.prajapati.business@gmail.com
-    ](mailto:dhruv.prajapati.business@gmail.com)
--   **Terms**:
-    -   One-time payment per company/organization
-    -   Covers all current and future images in the Dockyard collection
-    -   Includes commercial support and updates
-    -   No attribution required for commercial use
+While not required by the license, we appreciate attribution when using Dockyard images:
 
-### License Terms
+```dockerfile
+# Optional but appreciated
+LABEL maintainer="Built with Dockyard by Dhruv Prajapati"
+```
 
--   **Non-Commercial**: Personal projects, education, open-source projects
--   **Commercial**: Any use in for-profit businesses, SaaS applications, commercial products
--   **Attribution**: Must include "Built with Dockyard by Dhruv Prajapati" for free usage
--   **Modifications**: Allowed under both licenses
--   **Distribution**: Allowed under both licenses
+### Support
 
-### Payment for Commercial Use
+For questions, support, or consulting services:
 
-To use Dockyard images commercially, please:
-
-1. Contact [dhruv.prajapati.business@gmail.com](mailto:dhruv.prajapati.business@gmail.com)
-2. Provide company/organization details
-3. Complete payment of $99 USD
-4. Receive commercial license and support
+-   **Email**: [dhruv.prajapati.business@gmail.com](mailto:dhruv.prajapati.business@gmail.com)
+-   **GitHub Issues**: [GitHub Issues](https://github.com/imdhruv99/Dockyard/issues)
+-   **Documentation**: Check individual image README files
 
 ## 👨‍💻 Author
 
