@@ -90,36 +90,6 @@ Dockyard/
 └── .gitignore
 ```
 
-## 🔧 Development
-
-### Prerequisites
-
--   Docker 20.10+
--   Git
-
-### Building Images
-
-```bash
-# Build Golden Ubuntu
-cd golden-ubuntu
-docker build -t imdhruv99/golden-ubuntu:1.0.0 .
-
-# Build PostgreSQL
-cd ../postgres
-docker build -t imdhruv99/postgres:1.0.0 .
-```
-
-### Testing Images
-
-```bash
-# Test Golden Ubuntu
-docker run -it --rm imdhruv99/golden-ubuntu:1.0.0 /bin/bash
-
-# Test PostgreSQL
-docker run -d --name test-postgres -p 5432:5432 imdhruv99/postgres:1.0.0
-docker exec -it test-postgres psql -U postgres
-```
-
 ## 📄 License
 
 This project is licensed under the **Dual License** model:
