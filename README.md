@@ -90,53 +90,11 @@ Dockyard/
 └── .gitignore
 ```
 
-## 📄 License
-
-This project is licensed under the **MIT License** - a simple, permissive license that allows you to use this software for any purpose, including commercial use.
-
-### MIT License Benefits
-
--   **Free for everyone**: Personal, educational, and commercial use
--   **No restrictions**: Use, modify, distribute, and sell
--   **Simple compliance**: Just include the license and copyright notice
--   **Industry standard**: Widely trusted and understood
--   **Community friendly**: Encourages adoption and contributions
-
-### Attribution
-
-While not required by the license, we appreciate attribution when using Dockyard images:
-
-```dockerfile
-# Optional but appreciated
-LABEL maintainer="Built with Dockyard by Dhruv Prajapati"
-```
-
-### Support
-
-For questions, support, or consulting services:
-
--   **Email**: [dhruv.prajapati.business@gmail.com](mailto:dhruv.prajapati.business@gmail.com)
--   **GitHub Issues**: [GitHub Issues](https://github.com/imdhruv99/Dockyard/issues)
--   **Documentation**: Check individual image README files
-
 ## 👨‍💻 Author
 
 **Dhruv Prajapati**
 
 -   Email: [dhruv.prajapati.business@gmail.com](mailto:dhruv.prajapati.business@gmail.com)
 -   GitHub: [@imdhruv99](https://github.com/imdhruv99)
-
-## 🙏 Acknowledgments
-
--   Ubuntu team for the excellent base distribution
--   PostgreSQL community for the robust database system
--   Docker community for the containerization platform
--   All contributors and users of Dockyard
-
-## 📞 Support
-
--   **Issues**: [GitHub Issues](https://github.com/imdhruv99/Dockyard/issues)
--   **Commercial Support**: [dhruv.prajapati.business@gmail.com](mailto:dhruv.prajapati.business@gmail.com)
--   **Documentation**: Check individual image README files
 
 ---
