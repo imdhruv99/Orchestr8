@@ -1,0 +1,116 @@
+services:
+  kafka-1:
+    image: imdhruv99/kafka:1.0.0
+    container_name: kafka-1
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+      - "9999:9999"
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_NUM_PARTITIONS=5
+      - KAFKA_LOG_RETENTION_HOURS=24
+      - KAFKA_MESSAGE_MAX_BYTES=2000000
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+    volumes:
+      - kafka-data-1:/var/lib/kafka/data
+      - kafka-logs-1:/var/lib/kafka/logs
+    networks:
+      - kafka-network
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  kafka-2:
+    image: imdhruv99/kafka:1.0.0
+    container_name: kafka-2
+    restart: unless-stopped
+    ports:
+      - "9094:9092"
+      - "9095:9093"
+      - "10000:9999"
+    environment:
+      - KAFKA_NODE_ID=2
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9094
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_NUM_PARTITIONS=5
+      - KAFKA_LOG_RETENTION_HOURS=24
+      - KAFKA_MESSAGE_MAX_BYTES=2000000
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+    volumes:
+      - kafka-data-2:/var/lib/kafka/data
+      - kafka-logs-2:/var/lib/kafka/logs
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka-1
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  kafka-3:
+    image: imdhruv99/kafka:1.0.0
+    container_name: kafka-3
+    restart: unless-stopped
+    ports:
+      - "9096:9092"
+      - "9097:9093"
+      - "10001:9999"
+    environment:
+      - KAFKA_NODE_ID=3
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9096
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_NUM_PARTITIONS=5
+      - KAFKA_LOG_RETENTION_HOURS=24
+      - KAFKA_MESSAGE_MAX_BYTES=2000000
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+    volumes:
+      - kafka-data-3:/var/lib/kafka/data
+      - kafka-logs-3:/var/lib/kafka/logs
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka-1
+      - kafka-2
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  kafka-data-1:
+    driver: local
+  kafka-logs-1:
+    driver: local
+  kafka-data-2:
+    driver: local
+  kafka-logs-2:
+    driver: local
+  kafka-data-3:
+    driver: local
+  kafka-logs-3:
+    driver: local
+
+networks:
+  kafka-network:
+    driver: bridge
