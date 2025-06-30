@@ -1,105 +1,125 @@
 #!/bin/bash
 set -e
 
-# Function to replace environment variables in server.properties
-configure_kafka() {
-    echo "Configuring Kafka server.properties..."
+# Removed hardened umask as per user approach
 
-    # Create a temporary file for processing
-    cp ${KAFKA_HOME}/config/server.properties ${KAFKA_HOME}/config/server.properties.tmp
+# Dynamic parameters
+KAFKA_NODE_ID=${KAFKA_NODE_ID:-1}
+KAFKA_PROCESS_ROLES=${KAFKA_PROCESS_ROLES:-"broker,controller"}
+KAFKA_CONTROLLER_QUORUM_VOTERS=${KAFKA_CONTROLLER_QUORUM_VOTERS:-"1@localhost:9093"}
+KAFKA_LISTENERS=${KAFKA_LISTENERS:-"PLAINTEXT://:9092,CONTROLLER://:9093"}
+KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:-"PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"}
+KAFKA_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS:-"PLAINTEXT://localhost:9092"}
+KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS:-"/var/lib/kafka/logs"}
+KAFKA_INTER_BROKER_LISTENER_NAME=${KAFKA_INTER_BROKER_LISTENER_NAME:-"PLAINTEXT"}
 
-    # Replace key configurations with environment variables if provided
-    if [ ! -z "$KAFKA_NODE_ID" ]; then
-        sed -i "s/node.id=1/node.id=$KAFKA_NODE_ID/g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+# Print config
+cat <<EOCONF
+Starting Apache Kafka with the following configuration:
+  KAFKA_NODE_ID=${KAFKA_NODE_ID}
+  KAFKA_PROCESS_ROLES=${KAFKA_PROCESS_ROLES}
+  KAFKA_CONTROLLER_QUORUM_VOTERS=${KAFKA_CONTROLLER_QUORUM_VOTERS}
+  KAFKA_LISTENERS=${KAFKA_LISTENERS}
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+  KAFKA_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS}
+  KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
+  KAFKA_INTER_BROKER_LISTENER_NAME=${KAFKA_INTER_BROKER_LISTENER_NAME}
+EOCONF
 
-    if [ ! -z "$KAFKA_CONTROLLER_QUORUM_VOTERS" ]; then
-        sed -i "s|controller.quorum.voters=1@localhost:9093|controller.quorum.voters=$KAFKA_CONTROLLER_QUORUM_VOTERS|g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+mkdir -p ${KAFKA_LOG_DIRS}
 
-    if [ ! -z "$KAFKA_LISTENERS" ]; then
-        sed -i "s|listeners=PLAINTEXT://:9092,CONTROLLER://:9093|listeners=$KAFKA_LISTENERS|g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+cat <<EOF > /opt/kafka/config/server.properties
+##### Basic Configuration #####
+node.id=${KAFKA_NODE_ID}
+process.roles=${KAFKA_PROCESS_ROLES}
+controller.quorum.voters=${KAFKA_CONTROLLER_QUORUM_VOTERS}
 
-    if [ ! -z "$KAFKA_ADVERTISED_LISTENERS" ]; then
-        sed -i "s|advertised.listeners=PLAINTEXT://localhost:9092|advertised.listeners=$KAFKA_ADVERTISED_LISTENERS|g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Listener Configuration #####
+listeners=${KAFKA_LISTENERS}
+listener.security.protocol.map=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+advertised.listeners=${KAFKA_ADVERTISED_LISTENERS}
 
-    if [ ! -z "$KAFKA_LOG_DIRS" ]; then
-        sed -i "s|log.dirs=/var/lib/kafka/logs|log.dirs=$KAFKA_LOG_DIRS|g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Socket Configuration #####
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
 
-    if [ ! -z "$KAFKA_NUM_PARTITIONS" ]; then
-        sed -i "s/num.partitions=3/num.partitions=$KAFKA_NUM_PARTITIONS/g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Log Configuration #####
+log.dirs=${KAFKA_LOG_DIRS}
+num.partitions=3
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.bytes=-1
+log.segment.bytes=1073741824
+log.retention.check.interval.ms=300000
 
-    if [ ! -z "$KAFKA_LOG_RETENTION_HOURS" ]; then
-        sed -i "s/log.retention.hours=168/log.retention.hours=$KAFKA_LOG_RETENTION_HOURS/g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Topic Configuration #####
+auto.create.topics.enable=true
+delete.topic.enable=true
+default.replication.factor=1
+min.insync.replicas=1
+log.cleanup.policy=delete
+log.cleaner.enable=true
+log.cleaner.threads=1
+log.cleaner.dedupe.buffer.size=134217728
+log.cleaner.io.buffer.size=524288
+log.cleaner.io.buffer.load.factor=0.9
+log.cleaner.backoff.ms=15000
+log.cleaner.min.cleanable.ratio=0.5
+log.cleaner.delete.retention.ms=86400000
+compression.type=producer
+log.message.format.version=3.0-IV1
+log.message.timestamp.type=CreateTime
+log.segment.delete.delay.ms=60000
+log.index.size.max.bytes=10485760
+log.index.interval.bytes=4096
+log.flush.interval.messages=9223372036854775807
+log.flush.interval.ms=9223372036854775807
+log.flush.scheduler.interval.ms=9223372036854775807
 
-    if [ ! -z "$KAFKA_DEFAULT_REPLICATION_FACTOR" ]; then
-        sed -i "s/default.replication.factor=1/default.replication.factor=$KAFKA_DEFAULT_REPLICATION_FACTOR/g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Performance Tuning #####
+replica.fetch.max.bytes=1048576
+replica.fetch.min.bytes=1
+replica.fetch.wait.max.ms=500
+replica.lag.time.max.ms=10000
+message.max.bytes=1000012
+replica.socket.receive.buffer.bytes=65536
+replica.socket.send.buffer.bytes=65536
 
-    if [ ! -z "$KAFKA_MESSAGE_MAX_BYTES" ]; then
-        sed -i "s/message.max.bytes=1000012/message.max.bytes=$KAFKA_MESSAGE_MAX_BYTES/g" ${KAFKA_HOME}/config/server.properties.tmp
-    fi
+###### Security and Monitoring #####
+metric.reporters=
+metrics.num.samples=2
+metrics.sample.window.ms=30000
+metrics.recording.level=INFO
+jmx.port=9999
+jmx.hostname=
+jmx.authenticate=false
+jmx.ssl=false
+jmx.opts=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost
 
-    # Move the processed file back
-    mv ${KAFKA_HOME}/config/server.properties.tmp ${KAFKA_HOME}/config/server.properties
+###### Advanced Configuration #####
+controller.listener.names=CONTROLLER
+inter.broker.listener.name=${KAFKA_INTER_BROKER_LISTENER_NAME}
 
-    echo "Kafka configuration completed."
-}
+group.initial.rebalance.delay.ms=0
+group.min.session.timeout.ms=6000
+group.max.session.timeout.ms=300000
+EOF
 
-# Function to generate cluster ID if not exists
-generate_cluster_id() {
-    if [ ! -f "${KAFKA_DATA_DIR}/meta.properties" ]; then
-        echo "Generating new Kafka cluster ID..."
-        # Use JMX exporter for storage tool as well
-        KAFKA_OPTS="-javaagent:${KAFKA_HOME}/jmx_prometheus_javaagent.jar=9999:${KAFKA_HOME}/jmx-config.yml" kafka-storage.sh format -t $(kafka-storage.sh random-uuid) -c ${KAFKA_HOME}/config/server.properties
-        echo "Cluster ID generated successfully."
-    else
-        echo "Using existing cluster ID."
-    fi
-}
+# KRaft cluster ID initialization (if needed)
+if [[ -n "$KAFKA_CLUSTER_ID" && ! -f "$KAFKA_LOG_DIRS/meta.properties" ]]; then
+  echo "Formatting storage for KRaft mode with cluster ID: $KAFKA_CLUSTER_ID"
+  /opt/kafka/bin/kafka-storage.sh format -t "$KAFKA_CLUSTER_ID" -c /opt/kafka/config/server.properties --ignore-formatted
+fi
 
-# Function to wait for Kafka to be ready
-wait_for_kafka() {
-    echo "Waiting for Kafka to be ready..."
-    local max_attempts=30
-    local attempt=1
-
-    while [ $attempt -le $max_attempts ]; do
-        if kafka-topics.sh --bootstrap-server localhost:9092 --list > /dev/null 2>&1; then
-            echo "Kafka is ready!"
-            return 0
-        fi
-
-        echo "Attempt $attempt/$max_attempts: Kafka not ready yet, waiting..."
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-
-    echo "Kafka failed to start within expected time."
-    return 1
-}
-
-# Main execution
-main() {
-    echo "Starting Kafka container..."
-
-    # Configure Kafka based on environment variables
-    configure_kafka
-
-    # Generate cluster ID if needed
-    generate_cluster_id
-
-    # Set JMX exporter as Java agent
-    export KAFKA_OPTS="-javaagent:${KAFKA_HOME}/jmx_prometheus_javaagent.jar=9999:${KAFKA_HOME}/jmx-config.yml"
-
-    # Execute the main command
-    exec "$@"
-}
-
-# Run main function with all arguments
-main "$@"
+# Drop privileges if running as root
+if [ "$(id -u)" = '0' ]; then
+  exec su-exec kafka "$@"
+else
+  exec "$@"
+fi

@@ -4,9 +4,3 @@
 __pycache__/
 *.swp
 *.swo
-*.log
-*.tmp
-.DS_Store
-__pycache__/
-*.swp
-*.swo
