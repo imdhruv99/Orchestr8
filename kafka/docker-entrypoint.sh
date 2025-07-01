@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# Removed hardened umask as per user approach
-
 # Dynamic parameters
 KAFKA_NODE_ID=${KAFKA_NODE_ID:-1}
 KAFKA_PROCESS_ROLES=${KAFKA_PROCESS_ROLES:-"broker,controller"}
@@ -26,7 +24,7 @@ Starting Apache Kafka with the following configuration:
   KAFKA_INTER_BROKER_LISTENER_NAME=${KAFKA_INTER_BROKER_LISTENER_NAME}
 EOCONF
 
-mkdir -p ${KAFKA_LOG_DIRS}
+mkdir -p "${KAFKA_LOG_DIRS}"
 
 cat <<EOF > /opt/kafka/config/server.properties
 ##### Basic Configuration #####
@@ -96,11 +94,6 @@ metric.reporters=
 metrics.num.samples=2
 metrics.sample.window.ms=30000
 metrics.recording.level=INFO
-jmx.port=9999
-jmx.hostname=
-jmx.authenticate=false
-jmx.ssl=false
-jmx.opts=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost
 
 ###### Advanced Configuration #####
 controller.listener.names=CONTROLLER
@@ -111,11 +104,15 @@ group.min.session.timeout.ms=6000
 group.max.session.timeout.ms=300000
 EOF
 
-# KRaft cluster ID initialization (if needed)
+# Format storage for KRaft mode if needed
 if [[ -n "$KAFKA_CLUSTER_ID" && ! -f "$KAFKA_LOG_DIRS/meta.properties" ]]; then
   echo "Formatting storage for KRaft mode with cluster ID: $KAFKA_CLUSTER_ID"
   /opt/kafka/bin/kafka-storage.sh format -t "$KAFKA_CLUSTER_ID" -c /opt/kafka/config/server.properties --ignore-formatted
 fi
+
+# Setup Prometheus JMX Exporter (do NOT also use built-in JMX agent)
+export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+export KAFKA_OPTS="-javaagent:/opt/kafka/jmx_prometheus_javaagent.jar=9999:/opt/kafka/jmx-config.yml"
 
 # Drop privileges if running as root
 if [ "$(id -u)" = '0' ]; then
