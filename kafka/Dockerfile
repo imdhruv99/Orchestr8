@@ -24,7 +24,7 @@ RUN groupadd -r kafka && \
 # Install required packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    openjdk-17-jdk \
+    openjdk-17-jre-headless \
     wget \
     gnupg2 \
     ca-certificates && \
