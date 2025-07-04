@@ -57,7 +57,13 @@ To build and push a multi-platform Docker image (e.g., for linux/amd64 and linux
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     ```
 
-3. Build and push the multi-platform image
+3. If you are building multi-platform image from WSL or windows, do not forget to convert `docker-entrypoint.sh` into unix
+
+    ```
+    dos2unix docker-entrypoint.sh
+    ```
+
+4. Build and push the multi-platform image
 
     ```
     docker buildx build --platform linux/amd64,linux/arm64 -t <IMAGE NAME>:1.0.0 .

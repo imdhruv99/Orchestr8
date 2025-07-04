@@ -31,18 +31,21 @@ docker build -t kafka:1.0.0 .
 
 ```sh
 docker run -d \
+  --name single_node_kafka \
   -e KAFKA_BROKER_ID=1 \
   -e KAFKA_NODE_ID=1 \
-  -e KAFKA_LISTENERS="INTERNAL://0.0.0.0:19091,EXTERNAL://0.0.0.0:19092" \
-  -e KAFKA_ADVERTISED_LISTENERS="INTERNAL://localhost:19091,EXTERNAL://localhost:19092" \
-  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP="INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT" \
+  -e KAFKA_LISTENERS="INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093" \
+  -e KAFKA_ADVERTISED_LISTENERS="INTERNAL://localhost:9092,CONTROLLER://localhost:9093" \
+  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP="INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT" \
   -e KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL \
-  -e KAFKA_CONTROLLER_QUORUM_VOTERS="1@localhost:19093" \
+  -e KAFKA_CONTROLLER_QUORUM_VOTERS="1@localhost:9093" \
   -e KAFKA_PROCESS_ROLES="broker,controller" \
-  -e KAFKA_CLUSTER_ID="<your-cluster-id>" \
+  -e KAFKA_CLUSTER_ID="m7nqU4EvTGeNwCjv9aYZ1A" \
   -v kafka-data:/var/lib/kafka/data \
-  -p 19091-19098:19091-19098 \
-  dockyard/kafka:latest
+  -p 9092:9092 \
+  -p 9093:9093 \
+  -p 9999:9999 \
+  imdhruv99/kafka:1.0.0
 ```
 
 ## Environment Variables
