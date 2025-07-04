@@ -30,10 +30,10 @@ A production-ready PostgreSQL 16 image built on the hardened `golden-ubuntu` bas
 
 ### Build the Image
 
-Build command if you want to push to your docker-hub:
+Multi-Platform build command and push to your docker-hub:
 
 ```bash
-docker build -t <docker-hub username>/postgres:1.0.0 .
+docker buildx build --platform linux/amd64,linux/arm64 -t <docker-hub username>/postgres:1.0.0 --push .
 ```
 
 OR for local use:

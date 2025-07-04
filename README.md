@@ -40,6 +40,29 @@ All images in Dockyard follow these security principles:
 -   **Regular updates**: Based on latest LTS versions with security patches
 -   **Custom configurations**: Optimized for security and performance
 
+## 🛠 Multi-Platform Docker Build with `buildx`
+
+To build and push a multi-platform Docker image (e.g., for linux/amd64 and linux/arm64), follow these steps:
+
+1. Create and use a new buildx builder
+
+    ```
+    docker buildx create --name multi-platform-build-container --use
+    docker buildx inspect --bootstrap
+    ```
+
+2. Enable QEMU emulation (if not already set up)
+
+    ```
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    ```
+
+3. Build and push the multi-platform image
+
+    ```
+    docker buildx build --platform linux/amd64,linux/arm64 -t <IMAGE NAME>:1.0.0 .
+    ```
+
 ## 👨‍💻 Author
 
 **Dhruv Prajapati**

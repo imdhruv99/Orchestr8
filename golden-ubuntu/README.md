@@ -30,10 +30,10 @@ A **hardened, minimal Ubuntu base image** built for secure, reusable container d
 
 ### Build the Image
 
-Build command if you want to push to your docker-hub:
+Multi-Platform build command and push to your docker-hub:
 
 ```bash
-docker build -t <docker-hub username>/golden-ubuntu:1.0.0 .
+docker buildx build --platform linux/amd64,linux/arm64 -t <docker-hub username>/golden-ubuntu:1.0.0 --push .
 ```
 
 OR for local use:
