@@ -8,21 +8,35 @@ Dockyard provides hardened, secure Docker images that serve as the foundation fo
 
 ## 📦 Available Images
 
-### Base Images
+### Base Image
 
 -   **[Golden Ubuntu](./golden-ubuntu/)**: Hardened Ubuntu 22.04 base image with security hardening, non-root execution, and minimal footprint
     -   Security-first approach with SUID/SGID removal
-    -   Non-root user execution
-    -   Minimal essential packages only
+    -   Non-root user execution (`imdhruv99`)
+    -   Minimal essential packages only (`bash`, `curl`, `ca-certificates`)
+    -   Core dump protection and secure umask (027)
+    -   Removed unnecessary services (`cron`, `rsyslog`, `systemd`)
     -   Production-ready foundation for other images
 
 ### Database Images
 
 -   **[PostgreSQL](./postgres/)**: Production-ready PostgreSQL 16 image built on Golden Ubuntu
-    -   Secure database configuration
-    -   Dedicated postgres user
-    -   Custom PostgreSQL configuration
-    -   Persistent data storage
+    -   Secure database configuration with custom `postgresql.conf`
+    -   Dedicated postgres user (UID: 999) with isolated ownership
+    -   Secure file permissions (700 on data directory)
+    -   Persistent data storage at `/var/lib/postgresql/data`
+    -   Multi-platform support (linux/amd64, linux/arm64)
+
+### Big Data Images
+
+-   **[Apache Kafka](./kafka/)**: Production-ready Kafka image with KRaft mode (no Zookeeper)
+    -   KRaft consensus mode for simplified deployment
+    -   Dynamic configuration via environment variables
+    -   Non-root execution (runs as `kafka` user)
+    -   JMX Exporter for Prometheus metrics monitoring
+    -   Support for single-node and multi-broker cluster setups
+    -   Persistent data storage at `/var/lib/kafka/data`
+    -   Multi-platform support (linux/amd64, linux/arm64)
 
 ### Coming Soon
 
