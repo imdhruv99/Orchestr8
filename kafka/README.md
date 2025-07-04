@@ -13,6 +13,22 @@ This image provides a production-ready, secure, and minimal Apache Kafka setup (
 
 ## Quick Start
 
+### Build the Image
+
+Multi-Platform build command and push to your docker-hub:
+
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 -t <docker-hub username>/kafka:1.0.0 --push .
+```
+
+OR for local use:
+
+```bash
+docker build -t kafka:1.0.0 .
+```
+
+### Run the Container
+
 ```sh
 docker run -d \
   -e KAFKA_BROKER_ID=1 \
