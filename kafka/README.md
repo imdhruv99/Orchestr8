@@ -27,7 +27,7 @@ OR for local use:
 docker build -t kafka:1.0.0 .
 ```
 
-### Run the Container
+### Run as Single Container
 
 ```sh
 docker run -d \
@@ -46,6 +46,16 @@ docker run -d \
   -p 9093:9093 \
   -p 9999:9999 \
   imdhruv99/kafka:1.0.0
+```
+
+### Run as Kafka cluster
+
+```sh
+# To run the cluster
+docker compose -p kafka-cluster up -d
+
+# To delete the cluster, adding `-v` will delete the volume as well
+docker compose -p kafka-cluster down -v
 ```
 
 ## Environment Variables
