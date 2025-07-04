@@ -27,7 +27,6 @@ Dockyard provides hardened, secure Docker images that serve as the foundation fo
 ### Coming Soon
 
 -   **Redis**: Secure Redis image for caching and session storage
--   **Kafka**: Apache Kafka for event streaming
 -   **MongoDB**: NoSQL database with security hardening
 -   **MySQL**: Relational database with production optimizations
 
@@ -41,54 +40,34 @@ All images in Dockyard follow these security principles:
 -   **Regular updates**: Based on latest LTS versions with security patches
 -   **Custom configurations**: Optimized for security and performance
 
-## 🚀 Quick Start
+## 🛠 Multi-Platform Docker Build with `buildx`
 
-### Using Golden Ubuntu as Base
+To build and push a multi-platform Docker image (e.g., for linux/amd64 and linux/arm64), follow these steps:
 
-```dockerfile
-FROM imdhruv99/golden-ubuntu:1.0.0
+1. Create and use a new buildx builder
 
-# Your application setup
-RUN apt-get update && apt-get install -y your-package
+    ```
+    docker buildx create --name multi-platform-build-container --use
+    docker buildx inspect --bootstrap
+    ```
 
-# Switch to non-root user
-USER imdhruv99
+2. Enable QEMU emulation (if not already set up)
 
-CMD ["your-application"]
-```
+    ```
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    ```
 
-### Running PostgreSQL
+3. If you are building multi-platform image from WSL or windows, do not forget to convert `docker-entrypoint.sh` into unix
 
-```bash
-# Build the image
-docker build -t imdhruv99/postgres:1.0.0 ./postgres
+    ```
+    dos2unix docker-entrypoint.sh
+    ```
 
-# Run PostgreSQL
-docker run -d \
-  --name postgres \
-  -p 5432:5432 \
-  -v postgres_data:/var/lib/postgresql/data \
-  imdhruv99/postgres:1.0.0
-```
+4. Build and push the multi-platform image
 
-## 📁 Project Structure
-
-```
-Dockyard/
-├── golden-ubuntu/           # Hardened Ubuntu base image
-│   ├── Dockerfile
-│   ├── README.md
-│   └── .dockerignore
-├── postgres/               # PostgreSQL database image
-│   ├── Dockerfile
-│   ├── docker-entrypoint.sh
-│   ├── postgresql.conf
-│   ├── README.md
-│   └── .dockerignore
-├── README.md              # This file
-├── LICENSE                # Project license
-└── .gitignore
-```
+    ```
+    docker buildx build --platform linux/amd64,linux/arm64 -t <IMAGE NAME>:1.0.0 .
+    ```
 
 ## 👨‍💻 Author
 
