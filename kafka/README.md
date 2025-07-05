@@ -1,4 +1,4 @@
-# Apache Kafka (KRaft mode) Docker Image
+# Apache Kafka
 
 This image provides a production-ready, secure, and minimal Apache Kafka setup (KRaft mode, no Zookeeper) based on the hardened `golden-ubuntu` base image.
 
