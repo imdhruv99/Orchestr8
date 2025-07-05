@@ -83,6 +83,12 @@ To build and push a multi-platform Docker image (e.g., for linux/amd64 and linux
     docker buildx build --platform linux/amd64,linux/arm64 -t <IMAGE NAME>:1.0.0 .
     ```
 
+5. To remove existing one
+
+    ```
+    docker buildx rm multi-platform-build-container
+    ```
+
 ## 👨‍💻 Author
 
 **Dhruv Prajapati**
