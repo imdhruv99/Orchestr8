@@ -1,0 +1,127 @@
+rules:
+    # Zookeeper server metrics
+    - pattern: org.apache.ZooKeeperService<name0=(.+), name1=(.+)><>Value
+      name: zookeeper_server_$1_$2
+      type: GAUGE
+
+    - pattern: org.apache.ZooKeeperService<name0=(.+)><>Value
+      name: zookeeper_server_$1
+      type: GAUGE
+
+    # Zookeeper request metrics
+    - pattern: org.apache.ZooKeeperService<name0=ReplicatedServer_id(.*), name1=(.+)><>Value
+      name: zookeeper_replicated_server_$2
+      type: GAUGE
+      labels:
+          server_id: "$1"
+
+    - pattern: org.apache.ZooKeeperService<name0=StandaloneServer_id(.*), name1=(.+)><>Value
+      name: zookeeper_standalone_server_$2
+      type: GAUGE
+      labels:
+          server_id: "$1"
+
+    # Zookeeper connection metrics
+    - pattern: org.apache.ZooKeeperService<name0=Connections, name1=(.+)><>Value
+      name: zookeeper_connections_$1
+      type: GAUGE
+
+    # Zookeeper session metrics
+    - pattern: org.apache.ZooKeeperService<name0=Sessions, name1=(.+)><>Value
+      name: zookeeper_sessions_$1
+      type: GAUGE
+
+    # Zookeeper data tree metrics
+    - pattern: org.apache.ZooKeeperService<name0=DataTree, name1=(.+)><>Value
+      name: zookeeper_datatree_$1
+      type: GAUGE
+
+    # Zookeeper request processor metrics
+    - pattern: org.apache.ZooKeeperService<name0=RequestProcessor, name1=(.+)><>Value
+      name: zookeeper_request_processor_$1
+      type: GAUGE
+
+    # Zookeeper network metrics
+    - pattern: org.apache.ZooKeeperService<name0=Network, name1=(.+)><>Value
+      name: zookeeper_network_$1
+      type: GAUGE
+
+    # Zookeeper leader election metrics
+    - pattern: org.apache.ZooKeeperService<name0=LeaderElection, name1=(.+)><>Value
+      name: zookeeper_leader_election_$1
+      type: GAUGE
+
+    # Zookeeper follower metrics
+    - pattern: org.apache.ZooKeeperService<name0=Follower, name1=(.+)><>Value
+      name: zookeeper_follower_$1
+      type: GAUGE
+
+    # Zookeeper observer metrics
+    - pattern: org.apache.ZooKeeperService<name0=Observer, name1=(.+)><>Value
+      name: zookeeper_observer_$1
+      type: GAUGE
+
+    # JVM metrics
+    - pattern: java.lang<type=(.+), name=(.+)><>Value
+      name: jvm_$1_$2
+      type: GAUGE
+
+    # Memory metrics
+    - pattern: java.lang<type=Memory><HeapMemoryUsage><>used
+      name: jvm_memory_heap_used
+      type: GAUGE
+
+    - pattern: java.lang<type=Memory><HeapMemoryUsage><>max
+      name: jvm_memory_heap_max
+      type: GAUGE
+
+    - pattern: java.lang<type=Memory><NonHeapMemoryUsage><>used
+      name: jvm_memory_nonheap_used
+      type: GAUGE
+
+    # GC metrics
+    - pattern: java.lang<type=GarbageCollector, name=(.+)><>CollectionCount
+      name: jvm_gc_collection_count
+      type: COUNTER
+      labels:
+          gc: "$1"
+
+    - pattern: java.lang<type=GarbageCollector, name=(.+)><>CollectionTime
+      name: jvm_gc_collection_time
+      type: COUNTER
+      labels:
+          gc: "$1"
+
+    # Thread metrics
+    - pattern: java.lang<type=Threading><>ThreadCount
+      name: jvm_thread_count
+      type: GAUGE
+
+    - pattern: java.lang<type=Threading><>PeakThreadCount
+      name: jvm_thread_peak_count
+      type: GAUGE
+
+    # Operating system metrics
+    - pattern: java.lang<type=OperatingSystem><>OpenFileDescriptorCount
+      name: jvm_os_open_file_descriptors
+      type: GAUGE
+
+    - pattern: java.lang<type=OperatingSystem><>MaxFileDescriptorCount
+      name: jvm_os_max_file_descriptors
+      type: GAUGE
+
+    - pattern: java.lang<type=OperatingSystem><>ProcessCpuLoad
+      name: jvm_os_process_cpu_load
+      type: GAUGE
+
+    - pattern: java.lang<type=OperatingSystem><>SystemCpuLoad
+      name: jvm_os_system_cpu_load
+      type: GAUGE
+
+    - pattern: java.lang<type=OperatingSystem><>FreePhysicalMemorySize
+      name: jvm_os_free_physical_memory
+      type: GAUGE
+
+    - pattern: java.lang<type=OperatingSystem><>TotalPhysicalMemorySize
+      name: jvm_os_total_physical_memory
+      type: GAUGE
