@@ -25,6 +25,7 @@ RUN apt-get update && \
     openjdk-17-jre-headless \
     wget \
     gnupg2 \
+    netcat \
     ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
