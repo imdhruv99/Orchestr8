@@ -1,0 +1,28 @@
+---
+rules:
+    - pattern: ".*"
+      name: storm_$1
+      type: GAUGE
+      attrNameSnakeCase: true
+
+    - pattern: "storm\\.metrics<type=(.*), name=(.*)><>(Value|Count)"
+      name: "storm_$1_$2_$3"
+      type: GAUGE
+      attrNameSnakeCase: true
+
+    - pattern: "java.lang<type=Memory><>(HeapMemoryUsage|NonHeapMemoryUsage)"
+      name: jvm_memory_usage
+      type: GAUGE
+      attrNameSnakeCase: true
+
+    - pattern: "java.lang<type=GarbageCollector, name=(.*)><>CollectionCount"
+      name: jvm_gc_$1_collection_count
+      type: COUNTER
+
+    - pattern: "java.lang<type=GarbageCollector, name=(.*)><>CollectionTime"
+      name: jvm_gc_$1_collection_time
+      type: COUNTER
+
+    - pattern: "java.lang<type=Threading><>(.*)"
+      name: jvm_threading_$1
+      type: GAUGE
