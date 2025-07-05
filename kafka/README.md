@@ -54,7 +54,7 @@ docker run -d \
 # To run the cluster
 docker compose -p kafka-cluster up -d
 
-# To delete the cluster, adding `-v` will delete the volume as well
+# To delete the cluster, adding -v will delete the volume as well
 docker compose -p kafka-cluster down -v
 ```
 
