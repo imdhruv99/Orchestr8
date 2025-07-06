@@ -4,7 +4,7 @@ LABEL maintainer="Dhruv Prajapati"
 LABEL description="Production ready Jenkins CI/CD server"
 
 # Environment variables
-ENV JENKINS_VERSION=2.426.1.3
+ENV JENKINS_VERSION=2.426.1
 ENV JENKINS_HOME=/var/jenkins_home
 ENV JENKINS_UC=https://updates.jenkins.io/update-center.json
 ENV JENKINS_UC_DOWNLOAD=https://updates.jenkins.io/download
@@ -13,7 +13,6 @@ ENV JENKINS_HTTP_PORT=8080
 ENV JENKINS_OPTS="-Djenkins.install.runSetupWizard=false"
 ENV JENKINS_PLUGINS="workflow-aggregator,git,configuration-as-code"
 ENV JENKINS_ADMIN_USER=admin
-ENV JENKINS_ADMIN_PASSWORD=admin
 ENV JENKINS_URL=http://localhost:8080
 
 # Switch to root user for privileged operations
@@ -80,5 +79,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:${JENKINS_HTTP_PORT}/login || exit 1
 
 # Entrypoint
-ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
-CMD [ "java", "-jar", "/usr/share/jenkins/jenkins.war" ]
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["java", "-Djava.util.logging.config.file=$JENKINS_HOME/log.properties", "-jar", "/usr/share/jenkins/jenkins.war"]
