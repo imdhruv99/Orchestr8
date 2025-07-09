@@ -32,6 +32,7 @@ RUN apt-get update && \
 
 # Download and extract Storm
 RUN wget -q https://downloads.apache.org/storm/apache-storm-${STORM_VERSION}/apache-storm-${STORM_VERSION}.tar.gz -O /tmp/storm.tar.gz && \
+    tar -tzf /tmp/storm.tar.gz | head && \
     tar -xzf /tmp/storm.tar.gz -C /opt && \
     ln -s /opt/apache-storm-${STORM_VERSION} ${STORM_HOME} && \
     rm /tmp/storm.tar.gz
@@ -46,7 +47,7 @@ COPY configs/jmx-config.yml ${STORM_HOME}/jmx-config.yml
 # Set permissions
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
     chown -R storm:storm /opt/apache-storm-${STORM_VERSION} && \
-    chmod 755 /opt/apache-storm-${STORM_VERSION}/bin/*.sh
+    find /opt/apache-storm-${STORM_VERSION}/bin -type f -name "*.sh" -exec chmod 755 {} +
 
 # Expose required ports
 EXPOSE 6627 6700 6701 6702 6703 8080 9999
