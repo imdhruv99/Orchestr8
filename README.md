@@ -1,6 +1,6 @@
 # Orchestr8
 
--   A collection of containerized tools in form of docker compose, docker image and k8s.
+A collection of containerized tools in form of docker compose, docker image and k8s.
 
 ## Composearium
 
