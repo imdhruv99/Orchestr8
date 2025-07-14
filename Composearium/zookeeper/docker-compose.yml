@@ -1,0 +1,73 @@
+networks:
+  zookeeper-network:
+    driver: bridge
+
+services:
+  zookeeper1:
+    image: ${ZOO_IMAGE}
+    container_name: zookeeper1
+    hostname: zookeeper1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_SERVER_ID: 1
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: ${ZOO_SERVERS}
+      ZOO_TICK_TIME: ${ZOO_TICK_TIME}
+      ZOO_INIT_LIMIT: ${ZOO_INIT_LIMIT}
+      ZOO_SYNC_LIMIT: ${ZOO_SYNC_LIMIT}
+      ZOO_MAX_CLIENT_CNXNS: ${ZOO_MAX_CLIENT_CNXNS}
+      ZOO_4LW_COMMANDS_WHITELIST: ${ZOO_4LW_COMMANDS_WHITELIST}
+    mem_limit: ${ZOO_MEM_LIMIT}
+    cpus: ${ZOO_CPU_LIMIT}
+    networks:
+      - zookeeper-network
+    volumes:
+      - ./data/zookeeper1:/bitnami/zookeeper
+    restart: unless-stopped
+
+  zookeeper2:
+    image: ${ZOO_IMAGE}
+    container_name: zookeeper2
+    hostname: zookeeper2
+    ports:
+      - "2182:2181"
+    environment:
+      ZOO_SERVER_ID: 2
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: ${ZOO_SERVERS}
+      ZOO_TICK_TIME: ${ZOO_TICK_TIME}
+      ZOO_INIT_LIMIT: ${ZOO_INIT_LIMIT}
+      ZOO_SYNC_LIMIT: ${ZOO_SYNC_LIMIT}
+      ZOO_MAX_CLIENT_CNXNS: ${ZOO_MAX_CLIENT_CNXNS}
+      ZOO_4LW_COMMANDS_WHITELIST: ${ZOO_4LW_COMMANDS_WHITELIST}
+    mem_limit: ${ZOO_MEM_LIMIT}
+    cpus: ${ZOO_CPU_LIMIT}
+    networks:
+      - zookeeper-network
+    volumes:
+      - ./data/zookeeper2:/bitnami/zookeeper
+    restart: unless-stopped
+
+  zookeeper3:
+    image: ${ZOO_IMAGE}
+    container_name: zookeeper3
+    hostname: zookeeper3
+    ports:
+      - "2183:2181"
+    environment:
+      ZOO_SERVER_ID: 3
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: ${ZOO_SERVERS}
+      ZOO_TICK_TIME: ${ZOO_TICK_TIME}
+      ZOO_INIT_LIMIT: ${ZOO_INIT_LIMIT}
+      ZOO_SYNC_LIMIT: ${ZOO_SYNC_LIMIT}
+      ZOO_MAX_CLIENT_CNXNS: ${ZOO_MAX_CLIENT_CNXNS}
+      ZOO_4LW_COMMANDS_WHITELIST: ${ZOO_4LW_COMMANDS_WHITELIST}
+    mem_limit: ${ZOO_MEM_LIMIT}
+    cpus: ${ZOO_CPU_LIMIT}
+    networks:
+      - zookeeper-network
+    volumes:
+      - ./data/zookeeper3:/bitnami/zookeeper
+    restart: unless-stopped
