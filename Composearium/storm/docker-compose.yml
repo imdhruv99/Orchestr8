@@ -1,0 +1,68 @@
+networks:
+  storm-network:
+    driver: bridge
+  zookeeper_zookeeper-network:
+    external: true
+
+services:
+  nimbus:
+    image: ${STORM_IMAGE}
+    container_name: nimbus
+    hostname: nimbus
+    command: storm nimbus
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    ports:
+      - "6627:6627"
+    mem_limit: ${STORM_NIMBUS_MEM}
+    cpus: ${STORM_NIMBUS_CPU}
+    volumes:
+      - ./data/nimbus:/apache-storm/data
+      - ./storm.yaml:/apache-storm/conf/storm.yaml:ro
+    restart: unless-stopped
+  supervisor1:
+    image: ${STORM_IMAGE}
+    container_name: supervisor1
+    hostname: supervisor1
+    command: storm supervisor
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_SUPERVISOR_MEM}
+    cpus: ${STORM_SUPERVISOR_CPU}
+    volumes:
+      - ./data/supervisor1:/apache-storm/data
+      - ./storm.yaml:/apache-storm/conf/storm.yaml:ro
+    restart: unless-stopped
+
+  supervisor2:
+    image: ${STORM_IMAGE}
+    container_name: supervisor2
+    hostname: supervisor2
+    command: storm supervisor
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_SUPERVISOR_MEM}
+    cpus: ${STORM_SUPERVISOR_CPU}
+    volumes:
+      - ./data/supervisor2:/apache-storm/data
+      - ./storm.yaml:/apache-storm/conf/storm.yaml:ro
+    restart: unless-stopped
+  ui:
+    image: ${STORM_IMAGE}
+    container_name: storm-ui
+    hostname: storm-ui
+    command: storm ui
+    ports:
+      - "48080:8080"
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_UI_MEM}
+    cpus: ${STORM_UI_CPU}
+    volumes:
+      - ./data/ui:/apache-storm/data
+      - ./storm.yaml:/apache-storm/conf/storm.yaml:ro
+    restart: unless-stopped
