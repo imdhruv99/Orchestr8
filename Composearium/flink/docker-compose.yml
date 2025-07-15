@@ -11,7 +11,8 @@ services:
     hostname: jobmanager
     ports:
       - "8081:8081"
-    command: jobmanager
+    environment:
+      FLINK_MODE: ${FLINK_JOBMANAGER_MODE}
     networks:
       - flink-network
       - zookeeper_zookeeper-network
@@ -26,7 +27,8 @@ services:
     image: ${FLINK_IMAGE}
     container_name: taskmanager1
     hostname: taskmanager1
-    command: taskmanager
+    environment:
+      FLINK_MODE: ${FLINK_TASKMANAGER_MODE}
     networks:
       - flink-network
       - zookeeper_zookeeper-network
@@ -41,7 +43,8 @@ services:
     image: ${FLINK_IMAGE}
     container_name: taskmanager2
     hostname: taskmanager2
-    command: taskmanager
+    environment:
+      FLINK_MODE: ${FLINK_TASKMANAGER_MODE}
     networks:
       - flink-network
       - zookeeper_zookeeper-network
