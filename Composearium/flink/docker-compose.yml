@@ -1,0 +1,46 @@
+networks:
+  flink-network:
+      driver: bridge
+  zookeeper_zookeeper-network:
+      external: true
+
+services:
+  jobmanager:
+    image: bitnami/flink:1.20.1
+    container_name: jobmanager
+    hostname: jobmanager
+    ports:
+      - "8081:8081"
+    environment:
+      - |
+          FLINK_PROPERTIES=
+          jobmanager.rpc.address: jobmanager
+          rest.address: 0.0.0.0
+          rest.bind-address: 0.0.0.0
+    command:
+      - jobmanager
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/jobmanager:/bitnami/flink
+    restart: unless-stopped
+
+  taskmanager:
+    image: bitnami/flink:1.20.1
+    container_name: taskmanager
+    hostname: taskmanager
+    environment:
+      - |
+          FLINK_PROPERTIES=
+          jobmanager.rpc.address: jobmanager
+          rest.address: 0.0.0.0
+          rest.bind-address: 0.0.0.0
+    command:
+      - taskmanager
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/taskmanager:/bitnami/flink
+    restart: unless-stopped
