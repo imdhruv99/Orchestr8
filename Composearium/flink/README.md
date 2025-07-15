@@ -2,6 +2,10 @@
 
 This setup provides an Apache Flink cluster with one JobManager and two TaskManagers, configured for high availability using Zookeeper. It is hardware-agnostic and optimized for development, with environment variable control for key settings.
 
+## Prerequisites
+
+This Flink cluster requires a Zookeeper ensemble to be running as a prerequisite. Please ensure the Zookeeper cluster is started before launching Flink. For setup and instructions, refer to the [Zookeeper README](../zookeeper/README.md).
+
 ## Features
 
 -   Apache Flink cluster with 1 JobManager and 2 TaskManagers.
