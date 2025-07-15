@@ -1,46 +1,53 @@
 networks:
   flink-network:
-      driver: bridge
+    driver: bridge
   zookeeper_zookeeper-network:
-      external: true
+    external: true
 
 services:
   jobmanager:
-    image: bitnami/flink:1.20.1
+    image: ${FLINK_IMAGE}
     container_name: jobmanager
     hostname: jobmanager
     ports:
       - "8081:8081"
-    environment:
-      - |
-          FLINK_PROPERTIES=
-          jobmanager.rpc.address: jobmanager
-          rest.address: 0.0.0.0
-          rest.bind-address: 0.0.0.0
-    command:
-      - jobmanager
+    command: jobmanager
     networks:
       - flink-network
       - zookeeper_zookeeper-network
     volumes:
       - ./data/jobmanager:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_JOBMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_JOBMANAGER_CPU_LIMIT}
     restart: unless-stopped
 
-  taskmanager:
-    image: bitnami/flink:1.20.1
-    container_name: taskmanager
-    hostname: taskmanager
-    environment:
-      - |
-          FLINK_PROPERTIES=
-          jobmanager.rpc.address: jobmanager
-          rest.address: 0.0.0.0
-          rest.bind-address: 0.0.0.0
-    command:
-      - taskmanager
+  taskmanager1:
+    image: ${FLINK_IMAGE}
+    container_name: taskmanager1
+    hostname: taskmanager1
+    command: taskmanager
     networks:
       - flink-network
       - zookeeper_zookeeper-network
     volumes:
-      - ./data/taskmanager:/bitnami/flink
+      - ./data/taskmanager1:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_TASKMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_TASKMANAGER_CPU_LIMIT}
+    restart: unless-stopped
+
+  taskmanager2:
+    image: ${FLINK_IMAGE}
+    container_name: taskmanager2
+    hostname: taskmanager2
+    command: taskmanager
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/taskmanager2:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_TASKMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_TASKMANAGER_CPU_LIMIT}
     restart: unless-stopped
