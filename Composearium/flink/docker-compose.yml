@@ -1,0 +1,56 @@
+networks:
+  flink-network:
+    driver: bridge
+  zookeeper_zookeeper-network:
+    external: true
+
+services:
+  jobmanager:
+    image: ${FLINK_IMAGE}
+    container_name: jobmanager
+    hostname: jobmanager
+    ports:
+      - "8081:8081"
+    environment:
+      FLINK_MODE: ${FLINK_JOBMANAGER_MODE}
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/jobmanager:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_JOBMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_JOBMANAGER_CPU_LIMIT}
+    restart: unless-stopped
+
+  taskmanager1:
+    image: ${FLINK_IMAGE}
+    container_name: taskmanager1
+    hostname: taskmanager1
+    environment:
+      FLINK_MODE: ${FLINK_TASKMANAGER_MODE}
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/taskmanager1:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_TASKMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_TASKMANAGER_CPU_LIMIT}
+    restart: unless-stopped
+
+  taskmanager2:
+    image: ${FLINK_IMAGE}
+    container_name: taskmanager2
+    hostname: taskmanager2
+    environment:
+      FLINK_MODE: ${FLINK_TASKMANAGER_MODE}
+    networks:
+      - flink-network
+      - zookeeper_zookeeper-network
+    volumes:
+      - ./data/taskmanager2:/bitnami/flink
+      - ./conf/flink-conf.yaml:/opt/bitnami/flink/conf/flink-conf.yaml:ro
+    mem_limit: ${FLINK_TASKMANAGER_MEM_LIMIT}
+    cpus: ${FLINK_TASKMANAGER_CPU_LIMIT}
+    restart: unless-stopped
