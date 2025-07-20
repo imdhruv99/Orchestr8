@@ -12,8 +12,8 @@ services:
     ports:
       - "6667:6627"
     environment:
-      STORM_ZOOKEEPER_SERVERS: zookeeper1,zookeeper2,zookeeper3
-      STORM_ZOOKEEPER_PORT: 2181
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
     volumes:
       - ./data/nimbus:/apache-storm/data
       - ./storm.yaml:/conf/storm.yaml
@@ -36,8 +36,8 @@ services:
       nimbus:
         condition: service_healthy
     environment:
-      STORM_ZOOKEEPER_SERVERS: zookeeper1,zookeeper2,zookeeper3
-      STORM_ZOOKEEPER_PORT: 2181
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
       STORM_NIMBUS_SEEDS: nimbus
     volumes:
       - ./data/supervisor1:/apache-storm/data
@@ -55,8 +55,8 @@ services:
       nimbus:
         condition: service_healthy
     environment:
-      STORM_ZOOKEEPER_SERVERS: zookeeper1,zookeeper2,zookeeper3
-      STORM_ZOOKEEPER_PORT: 2181
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
       STORM_NIMBUS_SEEDS: nimbus
     volumes:
       - ./data/supervisor2:/apache-storm/data
@@ -74,8 +74,8 @@ services:
       nimbus:
         condition: service_healthy
     environment:
-      STORM_ZOOKEEPER_SERVERS: zookeeper1,zookeeper2,zookeeper3
-      STORM_ZOOKEEPER_PORT: 2181
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
       STORM_NIMBUS_SEEDS: nimbus
     volumes:
       - ./data/supervisor3:/apache-storm/data
@@ -95,8 +95,8 @@ services:
     ports:
       - "48080:8080"
     environment:
-      STORM_ZOOKEEPER_SERVERS: zookeeper1,zookeeper2,zookeeper3
-      STORM_ZOOKEEPER_PORT: 2181
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
       STORM_NIMBUS_SEEDS: nimbus
     volumes:
       - ./data/ui:/apache-storm/data
