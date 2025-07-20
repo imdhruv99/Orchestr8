@@ -1,0 +1,108 @@
+networks:
+  storm-network:
+    driver: bridge
+  zookeeper_zookeeper-network:
+    external: true
+
+services:
+  nimbus:
+    image: ${STORM_IMAGE}
+    container_name: nimbus
+    command: storm nimbus
+    ports:
+      - "6667:6627"
+    environment:
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
+    volumes:
+      - ./data/nimbus:/apache-storm/data
+      - ./storm.yaml:/conf/storm.yaml
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    healthcheck:
+      test: ["CMD", "storm", "list"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    mem_limit: ${STORM_NIMBUS_MEM}
+    cpus: ${STORM_NIMBUS_CPU}
+
+  supervisor1:
+    image: ${STORM_IMAGE}
+    container_name: supervisor1
+    command: storm supervisor
+    depends_on:
+      nimbus:
+        condition: service_healthy
+    environment:
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
+      STORM_NIMBUS_SEEDS: nimbus
+    volumes:
+      - ./data/supervisor1:/apache-storm/data
+      - ./storm.yaml:/conf/storm.yaml
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_SUPERVISOR_MEM}
+    cpus: ${STORM_SUPERVISOR_CPU}
+  supervisor2:
+    image: ${STORM_IMAGE}
+    container_name: supervisor2
+    command: storm supervisor
+    depends_on:
+      nimbus:
+        condition: service_healthy
+    environment:
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
+      STORM_NIMBUS_SEEDS: nimbus
+    volumes:
+      - ./data/supervisor2:/apache-storm/data
+      - ./storm.yaml:/conf/storm.yaml
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_SUPERVISOR_MEM}
+    cpus: ${STORM_SUPERVISOR_CPU}
+  supervisor3:
+    image: ${STORM_IMAGE}
+    container_name: supervisor3
+    command: storm supervisor
+    depends_on:
+      nimbus:
+        condition: service_healthy
+    environment:
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
+      STORM_NIMBUS_SEEDS: nimbus
+    volumes:
+      - ./data/supervisor3:/apache-storm/data
+      - ./storm.yaml:/conf/storm.yaml
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_SUPERVISOR_MEM}
+    cpus: ${STORM_SUPERVISOR_CPU}
+  ui:
+    image: ${STORM_IMAGE}
+    container_name: storm-ui
+    command: storm ui
+    depends_on:
+      nimbus:
+        condition: service_healthy
+    ports:
+      - "48080:8080"
+    environment:
+      STORM_ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+      STORM_ZOOKEEPER_PORT: ${ZOOKEEPER_PORT}
+      STORM_NIMBUS_SEEDS: nimbus
+    volumes:
+      - ./data/ui:/apache-storm/data
+      - ./storm.yaml:/conf/storm.yaml
+    networks:
+      - storm-network
+      - zookeeper_zookeeper-network
+    mem_limit: ${STORM_UI_MEM}
+    cpus: ${STORM_UI_CPU}

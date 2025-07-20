@@ -1,0 +1,21 @@
+storm.zookeeper.servers:
+    - "zookeeper1"
+    - "zookeeper2"
+    - "zookeeper3"
+
+storm.zookeeper.port: 2181
+
+nimbus.seeds: ["nimbus"]
+
+storm.local.dir: "/apache-storm/data"
+
+nimbus.thrift.port: 6627
+ui.port: 8080
+
+storm.log.level: "DEBUG"
+
+supervisor.slots.ports:
+    - 6700
+    - 6701
+    - 6702
+    - 6703

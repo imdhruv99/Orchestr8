@@ -8,7 +8,7 @@ taskmanager.rpc.port: 6122
 high-availability: zookeeper
 high-availability.storageDir: file:///bitnami/flink/ha/
 high-availability.zookeeper.quorum: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
-high-availability.zookeeper.path.root: /flink-ha
+high-availability.zookeeper.path.root: /flink
 recovery.dir: file:///bitnami/flink/recovery
 
 # Address to access from browser
