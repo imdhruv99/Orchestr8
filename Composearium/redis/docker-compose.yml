@@ -1,0 +1,41 @@
+networks:
+  redis-network:
+    driver: bridge
+
+services:
+  redis:
+    image: ${REDIS_IMAGE}
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./data/redis:/data
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
+    mem_limit: ${REDIS_MEM_LIMIT}
+    cpus: ${REDIS_CPU_LIMIT}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - redis-network
+    restart: unless-stopped
+
+
+  redis-ui:
+    image: ${REDIS_UI_IMAGE}
+    container_name: redis-ui
+    ports:
+      - "${REDIS_UI_PORT}:8081"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - redis-network
+    depends_on:
+      - redis
+    restart: unless-stopped
