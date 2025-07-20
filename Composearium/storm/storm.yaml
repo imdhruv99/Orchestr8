@@ -12,4 +12,10 @@ storm.local.dir: "/apache-storm/data"
 nimbus.thrift.port: 6627
 ui.port: 8080
 
-storm.log.level: "INFO"
+storm.log.level: "DEBUG"
+
+supervisor.slots.ports:
+    - 6700
+    - 6701
+    - 6702
+    - 6703
