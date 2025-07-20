@@ -1,0 +1,91 @@
+networks:
+  airflow-network:
+    driver: bridge
+  postgres_postgres-network:
+    external: true
+  redis_redis-network:
+    external: true
+
+services:
+
+  airflow-init:
+    image: ${AIRFLOW_IMAGE}
+    entrypoint: /bin/bash
+    command: -c "airflow db init && airflow users create --username imdhruv99 --password dhruv@123 --firstname Dhruv --lastname Prajapati --role Admin --email imdhruv99@dhruv.com"
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - airflow-network
+      - postgres_postgres-network
+      - redis_redis-network
+
+  airflow-webserver:
+    image: ${AIRFLOW_IMAGE}
+    container_name: airflow-webserver
+    hostname: airflow-webserver
+    restart: unless-stopped
+    command: webserver
+    depends_on:
+      - airflow-scheduler
+    ports:
+      - "${AIRFLOW_UI_PORT}:8080"
+    environment:
+      &airflow_env
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+      AIRFLOW__CELERY__BROKER_URL: ${AIRFLOW__CELERY__BROKER_URL}
+      AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
+      AIRFLOW__WEBSERVER__RBAC: "True"
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - airflow-network
+      - postgres_postgres-network
+      - redis_redis-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  airflow-scheduler:
+    image: ${AIRFLOW_IMAGE}
+    container_name: airflow-scheduler
+    hostname: airflow-scheduler
+    restart: unless-stopped
+    command: scheduler
+    environment:
+      <<: *airflow_env
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - airflow-network
+      - postgres_postgres-network
+      - redis_redis-network
+
+  airflow-triggerer:
+    image: ${AIRFLOW_IMAGE}
+    container_name: airflow-triggerer
+    hostname: airflow-triggerer
+    restart: unless-stopped
+    command: triggerer
+    environment:
+      <<: *airflow_env
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - airflow-network
+      - postgres_postgres-network
+      - redis_redis-network
